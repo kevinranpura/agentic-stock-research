@@ -1,6 +1,14 @@
 from langgraph.graph import StateGraph, START, END
-
+from guardrails import input_guardrail_node, output_guardrail_node
 from state import StockResearchState
+
+
+def check_input(state):
+
+    if state["is_valid_query"]:
+        return "valid"
+
+    return "invalid"
 
 
 async def build_graph(agents):
@@ -20,59 +28,83 @@ async def build_graph(agents):
       }
     )
     structured_output = result["structured_response"]
+    print("=" * 80)
+    print("Agent1 output: ", structured_output)
+    print("=" * 80)
     return {
       "stock_candidates": structured_output
     }
+  
   async def market_data_node(state: StockResearchState):
     print("Running Market Data Agent")
-    print("=" * 80)
-    print("INPUT TO MARKET DATA AGENT")
-    print(state["stock_candidates"])
-    print("=" * 80)
+    tickers = [
+      stock.ticker
+      for stock in state["stock_candidates"].stocks
+    ]
+    prompt = f"""Get the latest market data for these NSE stocks:
+    {", ".join(tickers)}
+    For each provided ticker, collect:
+    - Current Price (INR)
+    - Previous Close
+    - Day Change (%)
+    - Today's Volume
+    - Trend (Bullish/Bearish/Sideways)
+    - Volume Spike (if any) """
     result = await agents["market_data"].ainvoke(
       {
         "messages": [
           {
             "role": "user",
-            "content": state["stock_candidates"],
+            "content": prompt,
           }
         ]
       }
     )
-    output = result["messages"][-1].content
+    structured_output = result["structured_response"]
     print("=" * 80)
-    print("OUTPUT FROM MARKET DATA AGENT")
-    print(output)
+    print("Agent2 output: ", structured_output)
     print("=" * 80)
-    print("*" * 30)
-    for message in result["messages"]:
-      print(type(message).__name__)
-      print(message)
-      print("-" * 80)
     return {
-      "market_data": result["messages"][-1].content
+      "market_data": structured_output
     }
+  
   async def news_analyst_node(state: StockResearchState):
     print("Running News Analyst Agent")
+    tickers = [
+      stock.ticker
+      for stock in state["stock_candidates"].stocks
+    ]
+    prompt = f"""Find the latest news for these NSE stocks:
+    {", ".join(tickers)}
+    For each provided NSE stock:
+    - Find important news from the last 3-5 days and summarize it in 3-5 lines.
+    - Summarize the key event.
+    - Classify sentiment as Positive, Neutral, or Negative.
+    - Explain its likely short-term market impact. """
     result = await agents["news_analyst"].ainvoke(
       {
         "messages": [
           {
             "role": "user",
-            "content": state["stock_candidates"],
+            "content": prompt,
           }
         ]
       }
     )
+    structured_output = result["structured_response"]
+    print("=" * 80)
+    print("Agent3 output: ", structured_output)
+    print("=" * 80)
     return {
-      "news_summary": result["messages"][-1].content
+      "news_summary": structured_output
     }
+  
   async def price_recommendation_node(state: StockResearchState):
     print("Running Price Recommender Agent")
     prompt = f""" You are given the following information. 
 
-    Market Data: {state["market_data"]}
-    News Summary: {state["news_summary"]}
+    Market Data: {state["market_data"].stocks}
+    News Summary: {state["news_summary"].stocks}
 
     Based on this information, generate the final recommendation. """
     result = await agents["recommender"].ainvoke(
@@ -85,11 +117,19 @@ async def build_graph(agents):
         ]
       }
     )
+    structured_output = result["structured_response"]
+    print("=" * 80)
+    print("Agent4 output: ",structured_output)
+    print("=" * 80)
     return {
-      "recommendation": result["messages"][-1].content
+      "recommendation": structured_output
     }
 
 
+  builder.add_node(
+      "input_guardrail",
+      input_guardrail_node
+  )
   builder.add_node(
       "stock_finder",
       stock_finder_node
@@ -106,11 +146,23 @@ async def build_graph(agents):
       "recommender",
       price_recommendation_node
   )
+  builder.add_node(
+      "output_guardrail",
+      output_guardrail_node
+  )
 
 
   builder.add_edge(
       START,
-      "stock_finder"
+      "input_guardrail"
+  )
+  builder.add_conditional_edges(
+      "input_guardrail",
+      check_input,
+      {
+         "valid":"stock_finder",
+         "invalid":END
+      }
   )
   builder.add_edge(
       "stock_finder",
@@ -126,6 +178,10 @@ async def build_graph(agents):
   )
   builder.add_edge(
       "recommender",
+      "output_guardrail"
+  )
+  builder.add_edge(
+      "output_guardrail",
       END
   )
 

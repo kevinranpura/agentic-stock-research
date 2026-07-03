@@ -205,19 +205,24 @@ from langchain_core.messages import convert_to_messages
 
 #     final_message_history = chunk[ "supervisor"]["messages"]
 
-async def run():
+async def run_agent(query: str):
 
     agents = await create_agents()
     graph = await build_graph(agents)
 
     result = await graph.ainvoke(
         {
-            "query":
-            "Give me good stock recommendation from NSE"
+            "query": query
         }
     )
+    return result
+    # if not result["is_valid_query"]:
+    #     print(result["error_message"])
+    # else:
+    #     if result["is_safe_output"]:
+    #         print(result["recommendation"].recommendations)
+    #     else:
+    #         print(result["output_warning"])
 
-    print(result)
-
-if __name__ == "__main__":
-    asyncio.run(run())
+# if __name__ == "__main__":
+#     asyncio.run(run())
