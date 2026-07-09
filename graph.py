@@ -1,6 +1,7 @@
 from langgraph.graph import StateGraph, START, END
 from guardrails import input_guardrail_node, output_guardrail_node
 from state import StockResearchState
+from rag.retriever import get_trading_context
 
 
 def check_input(state):
@@ -101,8 +102,13 @@ async def build_graph(agents):
   
   async def price_recommendation_node(state: StockResearchState):
     print("Running Price Recommender Agent")
+    rag_context = get_trading_context(
+      "stock recommendation strategy, confidence rules and risk policy"
+    )
+    print("RAG Context: ", rag_context)
     prompt = f""" You are given the following information. 
 
+    Trading Rules and Risk Framework: {rag_context}
     Market Data: {state["market_data"].stocks}
     News Summary: {state["news_summary"].stocks}
 

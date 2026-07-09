@@ -21,7 +21,7 @@ async def create_agents():
         }
     )
     tools = await client.get_tools()
-    model = init_chat_model(model="google_genai:gemini-2.5-flash", api_key = os.getenv("GEMINI_API_KEY"))
+    model = init_chat_model(model="google_genai:gemini-2.5-flash", api_key = os.getenv("GEMINI_API_KEY1"))
 
     stock_finder_agent = create_react_agent(model, tools, prompt=""" You are an equity research analyst for the Indian stock market (NSE). Select promising NSE-listed stocks for short-term trading based on recent performance, market sentiment, news, and momentum. Rules:
     - Avoid penny and illiquid stocks.

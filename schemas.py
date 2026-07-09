@@ -35,7 +35,7 @@ class StockRecommendation(BaseModel):
     action: Literal["BUY","SELL","HOLD"]
     target_price: float
     confidence: int = Field(ge=0, le=100, description="Confidence score from 0-100")
-    reason: str = Field(max_length=200, description="Short reason for recommendation")
-    risk: str = Field(max_length=150, description="Main investment risk")
+    reason: str = Field(description="Short reason for recommendation")
+    risk: str = Field(description="Main investment risk")
 class RecommendationOutput(BaseModel):
     recommendations: list[StockRecommendation] = Field(min_length=2, max_length=2)
