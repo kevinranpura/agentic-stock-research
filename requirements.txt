@@ -6,5 +6,3 @@ langchain-groq
 langchain-google-genai
 langgraph_supervisor
 streamlit
-langchain-community
-chromadb==0.5.3
