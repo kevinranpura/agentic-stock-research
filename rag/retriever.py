@@ -3,6 +3,7 @@ import chromadb
 
 from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from rag.create_vector_db import create_vector_db
 
 
 load_dotenv()
@@ -18,10 +19,18 @@ client = chromadb.PersistentClient(
     path="./chroma_db"
 )
 
+try:
+    collection = client.get_collection(
+        name="stock_rules"
+    )
 
-collection = client.get_collection(
-    name="stock_rules"
-)
+except Exception:
+    print("Creating vector database...")
+    create_vector_db()
+
+    collection = client.get_collection(
+        name="stock_rules"
+    )
 
 
 def get_trading_context(query):
