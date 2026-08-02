@@ -1,9 +1,4 @@
-import { useEffect, useState } from 'react'
-
 const StockTicker = () => {
-  const [offset, setOffset] = useState(0)
-
-  // Mock stock data for the ticker
   const stocks = [
     { symbol: 'RELIANCE', change: '+1.2%', positive: true },
     { symbol: 'TCS', change: '-0.8%', positive: false },
@@ -17,32 +12,23 @@ const StockTicker = () => {
     { symbol: 'MARUTI', change: '+2.3%', positive: true },
     { symbol: 'BHARTIARTL', change: '+1.1%', positive: true },
     { symbol: 'ITC', change: '+0.6%', positive: true },
-    { symbol: 'HDFCBANK', change: '+1.5%', positive: true },
-    { symbol: 'JCICBANK', change: '-0.9%', positive: false },
-    { symbol: 'WIPROFIN', change: '+1.7%', positive: true },
-  ]
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setOffset((prev) => prev - 1)
-    }, 30)
-
-    return () => clearInterval(interval)
-  }, [])
+    { symbol: 'LT', change: '+0.9%', positive: true },
+    { symbol: 'SUNPHARMA', change: '-0.4%', positive: false },
+    { symbol: 'TITAN', change: '+1.7%', positive: true },
+  ];
+  // Render the list twice back-to-back and animate a translateX(-50%) loop.
+  // Since both halves are identical, the moment the first half scrolls
+  // fully offscreen the second half is in the exact same visual position —
+  // so the animation can repeat forever with no visible seam or JS state.
+  const track = [...stocks, ...stocks]
 
   return (
-    <div className="bg-dark-900 border-b border-slate-800/50 overflow-hidden">
-      <div 
-        className="flex gap-8 py-2"
-        style={{
-          transform: `translateX(${offset}px)`,
-          width: 'max-content',
-        }}
-      >
-        {[...stocks, ...stocks, ...stocks].map((stock, index) => (
-          <div key={index} className="flex items-center gap-2 whitespace-nowrap">
-            <span className="text-sm font-semibold text-slate-300">{stock.symbol}</span>
-            <span className={`text-sm font-medium ${stock.positive ? 'text-green-400' : 'text-red-400'}`}>
+    <div className="bg-surface-950 border-b border-line overflow-hidden sticky top-0 z-50">
+      <div className="flex gap-10 py-2 font-mono w-max animate-marquee">
+        {track.map((stock, index) => (
+          <div key={index} className="flex items-center gap-2 whitespace-nowrap text-xs">
+            <span className="text-[#9ca3af] tracking-[0.1em]">{stock.symbol}</span>
+            <span className={stock.positive ? 'text-up' : 'text-down'}>
               {stock.change}
             </span>
           </div>

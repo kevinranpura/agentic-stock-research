@@ -6,7 +6,7 @@ const SearchBar = ({ onAnalyze, isAnalyzing }) => {
   const suggestedQueries = [
     'Recommend good NSE stocks',
     'Best NSE stocks to buy today',
-    'Which NSE stocks should I invest in?'
+    'Which NSE stocks should I invest in?',
   ]
 
   const handleSubmit = (e) => {
@@ -24,71 +24,51 @@ const SearchBar = ({ onAnalyze, isAnalyzing }) => {
   }
 
   return (
-    <div className="mt-12 mb-8">
-      <div className="text-center mb-8">
-        <h2 className="text-5xl font-bold mb-4">
-          <span className="text-white">NSE Stock Intelligence</span>
-        </h2>
-        <h3 className="text-3xl font-bold mb-6">
-          <span className="text-gradient">Powered by LangGraph</span>
-        </h3>
-        <p className="text-slate-400 text-lg max-w-3xl mx-auto">
-          Ask anything about NSE stocks. Agents research, gather market data, analyse news, and
-          produce confident trading recommendations.
-        </p>
-      </div>
+    <div className="mt-16 mb-10 max-w-3xl">
+      <p className="font-mono text-xs uppercase tracking-[0.3em] text-accent mb-4">
+        NSE · AI Recommendations
+      </p>
+      <h2 className="font-display text-5xl md:text-6xl text-ink leading-[1.05] mb-5">
+        Stock research,
+        <br />
+        run by agents.
+      </h2>
+      <p className="text-ink-muted text-base max-w-xl mb-10 leading-relaxed">
+        Get AI-powered BUY, HOLD, or SELL recommendations for NSE stocks. Multiple AI agents analyze live market data, recent news, and trading signals to generate confidence-scored recommendations.
+      </p>
 
-      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto mb-6">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-            <svg className="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+      <form onSubmit={handleSubmit} className="mb-6">
+        <div className="border border-line rounded-md bg-surface-900 focus-within:border-accent/60 transition-colors">
+          <div className="flex items-center px-4">
+            <span className="font-mono text-accent text-sm mr-3 select-none">›</span>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="recommend good NSE stocks for short-term trading"
+              disabled={isAnalyzing}
+              className="flex-1 bg-transparent py-4 font-mono text-sm text-ink placeholder-ink-faint focus:outline-none disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={!query.trim() || isAnalyzing}
+              className="ml-3 shrink-0 px-4 py-2 border border-line hover:border-accent text-ink text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-40 disabled:hover:border-line rounded-sm"
+            >
+              {isAnalyzing ? 'Running…' : 'Run →'}
+            </button>
           </div>
-          
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="e.g. Recommend good NSE stocks for short-term trading"
-            disabled={isAnalyzing}
-            className="w-full pl-12 pr-32 py-4 bg-dark-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-          />
-          
-          <button
-            type="submit"
-            disabled={!query.trim() || isAnalyzing}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-lg font-medium hover:from-primary-600 hover:to-primary-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-primary-500/25"
-          >
-            {isAnalyzing ? (
-              <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Analysing
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Analyze
-              </>
-            )}
-          </button>
         </div>
       </form>
 
       {!isAnalyzing && (
-        <div className="max-w-3xl mx-auto flex flex-wrap gap-3 justify-center">
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
           {suggestedQueries.map((suggestion, index) => (
             <button
               key={index}
               onClick={() => handleSuggestionClick(suggestion)}
-              className="px-4 py-2 bg-dark-800/50 hover:bg-dark-700/50 border border-slate-700/50 hover:border-slate-600/50 rounded-lg text-sm text-slate-300 hover:text-white transition-all"
+              className="font-mono text-xs text-ink-faint hover:text-accent transition-colors"
             >
-              {suggestion}
+              {suggestion} →
             </button>
           ))}
         </div>

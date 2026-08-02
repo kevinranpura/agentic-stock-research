@@ -1,11 +1,22 @@
-const DataSection = ({ title, icon, children }) => {
+const DataSection = ({ title, icon, accent = 'accent', children }) => {
+  const chipStyles = {
+    accent: 'bg-accent/15 text-accent',
+    up: 'bg-up/15 text-up',
+  }
+
   return (
-    <div className="bg-gradient-to-br from-dark-800/50 to-dark-900/50 border border-slate-700/50 rounded-2xl p-6 backdrop-blur-sm">
-      <div className="flex items-center gap-2 mb-4 pb-4 border-b border-slate-700/30">
-        <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center text-primary-400">
-          {icon}
-        </div>
-        <h3 className="font-semibold text-white">{title}</h3>
+    <div className="border border-line rounded-xl bg-surface-900 card-elevated p-5">
+      <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-line">
+        {icon && (
+          <div
+            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+              chipStyles[accent] || chipStyles.accent
+            }`}
+          >
+            {icon}
+          </div>
+        )}
+        <h3 className="text-sm font-semibold text-ink">{title}</h3>
       </div>
       {children}
     </div>

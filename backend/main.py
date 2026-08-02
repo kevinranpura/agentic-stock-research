@@ -269,12 +269,22 @@ async def analyze_stock_stream(request: AnalysisRequest):
             yield f"data: {json.dumps(final_data)}\n\n"
             
         except Exception as e:
-            print("=" * 80)
-            print(f"ERROR during streaming analysis: {str(e)}")
-            import traceback
-            traceback.print_exc()
-            print("=" * 80)
-            yield f"data: {json.dumps({'type': 'error', 'error': str(e)})}\n\n"
+            error = str(e).lower()
+            if (
+                "429" in error
+                or "resource_exhausted" in error
+                or "quota" in error
+                or "rate limit" in error
+            ):
+                message = "Daily AI request limit reached. Please try again later."
+                
+            elif "bright" in error:
+                message = "Unable to retrieve live market data."
+
+            else:
+                message = "Something went wrong while analyzing the stocks."
+
+            yield f"data: {json.dumps({'type': 'error', 'error': message})}\n\n"
     
     return StreamingResponse(
         generate(),
@@ -419,10 +429,39 @@ async def analyze_stock(request: AnalysisRequest):
         import traceback
         traceback.print_exc()
         print("=" * 80)
+
+        error = str(e).lower()
+
+        # Gemini quota / rate limit
+        if (
+            "429" in error
+            or "resource_exhausted" in error
+            or "quota" in error
+            or "rate limit" in error
+        ):
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "error": "Daily AI request limit reached. Please try again later."
+                },
+                status_code=429
+            )
+
+        # Bright Data
+        if "bright" in error:
+            return JSONResponse(
+                content={
+                    "success": False,
+                    "error": "Unable to retrieve live market data at the moment."
+                },
+                status_code=503
+            )
+
+        # Generic error
         return JSONResponse(
             content={
                 "success": False,
-                "error": f"Analysis failed: {str(e)}"
+                "error": "Something went wrong while analyzing the stocks. Please try again."
             },
             status_code=500
         )

@@ -1,41 +1,34 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#f0f4ff',
-          100: '#e0eaff',
-          200: '#c7d7fe',
-          300: '#a5b9fc',
-          400: '#8093f9',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
+        ink: {
+          DEFAULT: '#EDEEF0',
+          muted: '#9297A1',
+          faint: '#5B5F68',
         },
-        dark: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
-          950: '#020617',
-        }
+        surface: {
+          950: '#0A0B0D',
+          900: '#111318',
+          850: '#14161C',
+          800: '#181B22',
+          700: '#20242C',
+        },
+        line: '#23262E',
+        accent: {
+          DEFAULT: '#C9A227',
+          dim: '#8A7020',
+        },
+        up: '#3FB27F',
+        down: '#E2574C',
       },
-      animation: {
-        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      }
+      fontFamily: {
+        display: ['"Fraunces"', 'serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        sans: ['"Inter"', '-apple-system', 'sans-serif'],
+      },
     },
   },
   plugins: [],

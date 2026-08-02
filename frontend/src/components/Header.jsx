@@ -1,29 +1,25 @@
 const Header = () => {
   return (
-    <header className="border-b border-slate-800/50 bg-dark-900/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4 max-w-7xl">
+    <header className="border-b border-line bg-surface-950/90 backdrop-blur-sm sticky top-[33px] z-50">
+      <div className="container mx-auto px-6 py-4 max-w-6xl">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white">
-                Agentic AI Stock Research
-              </h1>
-              <p className="text-xs text-slate-400">
-                NSE Stock Analysis | Powered by LangGraph
-              </p>
-            </div>
+          <div className="flex items-baseline gap-[30px]">
+            <h1 className="font-display text-lg text-ink tracking-tight">
+              StockSage - AI Stock Recommendation Platform
+            </h1>
+            <span className="font-mono text-[10px] text-[#6b7280] uppercase tracking-[0.2em]">
+              NSE · Multi Agent System
+            </span>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-xs text-green-400 font-medium">NSE Live</span>
-            </div>
+
+          <div className="flex items-center gap-2">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-up opacity-75 animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-up" />
+            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-muted">
+              Live
+            </span>
           </div>
         </div>
       </div>
